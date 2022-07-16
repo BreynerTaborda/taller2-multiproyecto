@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: customer-service
+  cloud:
+    config:
+      uri: http://localhost:9000
+      username: ${CONFIG_USER}
+      password: ${CONFIG_PASSWORD}
+      enabled: true
