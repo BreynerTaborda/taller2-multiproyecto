@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          uri: file:///E:/Poli2022-1/PDS/Repos/4.1.MultiprojectConfigData
+          uri: file:///D:/IDE_IDEA/Profundizacion- CES4/taller2-configData
   security:
     user:
       name: ${CONFIG_USER}

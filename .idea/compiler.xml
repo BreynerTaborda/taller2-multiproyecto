@@ -8,11 +8,12 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.24/13a394eed5c4f9efb2a6d956e2086f1d81e857d9/lombok-1.18.24.jar" />
         </processorPath>
-        <module name="Test.shopping-service.main" />
-        <module name="Test.customer-service.main" />
         <module name="Test.eureka-service.main" />
-        <module name="Test.product-service.main" />
+        <module name="Test.movies-service.main" />
+        <module name="Test.bookings-service.main" />
+        <module name="Test.showtimes-service.main" />
         <module name="Test.gateway-service.main" />
+        <module name="Test.users-service.main" />
         <module name="Test.admin-service.main" />
         <module name="Test.config-service.main" />
       </profile>

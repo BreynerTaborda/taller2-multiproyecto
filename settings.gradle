@@ -1,8 +1,9 @@
 rootProject.name = 'Test'
 
-include 'product-service'
-include 'customer-service'
-include 'shopping-service'
+include 'users-service'
+include 'movies-service'
+include 'showtimes-service'
+include 'bookings-service'
 include 'config-service'
 include 'eureka-service'
 include 'gateway-service'
