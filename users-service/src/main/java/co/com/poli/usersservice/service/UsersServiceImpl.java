@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,15 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
-    public void delete(Users users) {
-        this.usersRepository.delete(users);
+    public Boolean delete(Long idUsers) {
+        Optional<Users> users = this.usersRepository.findById(idUsers);
+
+        if(!users.isEmpty()){
+            this.usersRepository.delete(users.get());
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -35,6 +43,13 @@ public class UsersServiceImpl implements UsersService{
 
     @Override
     public Users findById(Long id) {
-        return this.usersRepository.getById(id);
+        Optional<Users> user = this.usersRepository.findById(id);
+
+        if(!user.isEmpty()){
+            return user.get();
+        }
+
+        return null;
     }
+
 }

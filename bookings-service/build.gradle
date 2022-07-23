@@ -2,6 +2,7 @@ ext {
 	set('springCloudVersion', "2021.0.2")
 	set('springAdminVersion', "2.6.2")
 }
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -17,7 +18,6 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:3.1.0'
 	implementation 'de.codecentric:spring-boot-admin-starter-client'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
 }
 
 dependencyManagement {

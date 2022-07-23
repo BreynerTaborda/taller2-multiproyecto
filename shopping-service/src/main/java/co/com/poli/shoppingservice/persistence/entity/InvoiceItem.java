@@ -24,6 +24,7 @@ public class InvoiceItem {
     @Positive(message = "La cantidad debe ser mayor que cero")
     @Column(name = "price")
     private Double price;
+
     @Column(name = "product_id")
     private Long productId;
     @Transient

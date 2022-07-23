@@ -20,11 +20,9 @@ public class Users {
     private Long id;
 
     @Column
-    @NotBlank
     private String name;
 
     @Column
-    @NotBlank
     private String lastname;
 
 

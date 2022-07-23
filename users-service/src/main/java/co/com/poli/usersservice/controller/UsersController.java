@@ -8,13 +8,15 @@ import co.com.poli.usersservice.persistence.entity.Users;
 import co.com.poli.usersservice.service.UsersService;
 import co.com.poli.usersservice.service.dto.UsersInDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -25,8 +27,12 @@ public class UsersController {
 
     private final ResponseBuild responseBuild;
 
-    @PostMapping()
-    public Response save(@Valid @RequestBody UsersInDTO users) {
+    @PostMapping
+    public Response save(@Valid @RequestBody UsersInDTO users, BindingResult result) {
+        if(result.hasErrors()){
+            return this.responseBuild.failed(formatMessage(result));
+        }
+
         Users usersEntity = this.usersService.save(users);
 
         if(usersEntity.getId() == null){
@@ -36,16 +42,50 @@ public class UsersController {
         return this.responseBuild.success(usersEntity);
     }
 
-//    public void delete(Users users) {
-//        this.usersRepository.delete(users);
-//    }
-//
-//    public List<Users> findAll() {
-//        return this.usersRepository.findAll();
-//    }
-//
-//    public Users findById(Long id) {
-//        return this.usersRepository.getById(id);
-//    }
+    @DeleteMapping("/{id}")
+    public Response delete(@PathVariable("id") Long idUsers) {
+        Boolean elminacionUsuario = this.usersService.delete(idUsers);
+
+        if(elminacionUsuario){
+            return  this.responseBuild.success("El usuario con id:" + idUsers + " fue eliminado.");
+        }
+
+        return this.responseBuild.failedNotFound("El usuario con id:" + idUsers + " no existe.");
+    }
+
+
+    @GetMapping()
+    public Response findAll() {
+        List<Users> usuarios = this.usersService.findAll();
+
+        if(usuarios.size() > 0){
+            return  this.responseBuild.success(usuarios);
+        }
+
+        return this.responseBuild.failedNotFound("No existen usuarios registrados.");
+    }
+
+    @GetMapping("/{id}")
+    public Response findById(@PathVariable("id") Long id) {
+       Users user = this.usersService.findById(id);
+
+        if(user != null){
+            return this.responseBuild.success(user);
+        }
+
+        return this.responseBuild.failedNotFound("No existe el user con id: " + id);
+    }
+
+    private List<Map<String, String>> formatMessage(BindingResult result){
+        List<Map<String, String>> errors = result.getFieldErrors().stream()
+                .map(error ->{
+                    Map<String, String> newError = new HashMap<>();
+                    newError.put(error.getField(), error.getDefaultMessage());
+                    return newError;
+                }).collect(Collectors.toList());
+        return errors;
+
+    }
+
 
 }

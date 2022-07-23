@@ -10,7 +10,7 @@ public interface UsersService {
 
     Users save(UsersInDTO users);
 
-    void delete(Users users);
+    Boolean delete(Long idUsers);
 
     List<Users> findAll();
 
