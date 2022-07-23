@@ -1,5 +1,6 @@
 package co.com.poli.usersservice.service;
 
+import co.com.poli.usersservice.clientFeign.BookingsClient;
 import co.com.poli.usersservice.persistence.entity.Users;
 import co.com.poli.usersservice.persistence.repository.UsersRepository;
 import co.com.poli.usersservice.service.dto.UsersInDTO;
@@ -15,6 +16,8 @@ public class UsersServiceImpl implements UsersService{
 
     private final UsersRepository usersRepository;
 
+    private final BookingsClient bookingsClient;
+
     @Override
     public Users save(UsersInDTO users) {
         Users usersEntity = new Users();
@@ -25,15 +28,33 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
-    public Boolean delete(Long idUsers) {
+    public String delete(Long idUsers) {
+        Boolean servicioCaido = false;
+        Boolean movieBookingsVacio = false;
         Optional<Users> users = this.usersRepository.findById(idUsers);
 
         if(!users.isEmpty()){
-            this.usersRepository.delete(users.get());
-            return true;
+            String mensajeRespuesta =  "Esta abajo el servicio de bookings";
+            int clienteExistente = bookingsClient.validarUserRegistrado(idUsers).getCode();
+            if(clienteExistente == 404){
+                movieBookingsVacio = true;
+            }else if(clienteExistente == 500){
+                servicioCaido = true;
+            }
+
+            if(!servicioCaido){
+                if(movieBookingsVacio){
+                    this.usersRepository.delete(users.get());
+                    return "eliminado";
+                }else{
+                    mensajeRespuesta = "Existe registro en bookings para el user con id:" + idUsers;
+                }
+            }
+
+            return mensajeRespuesta;
         }
 
-        return false;
+        return "inexistente";
     }
 
     @Override

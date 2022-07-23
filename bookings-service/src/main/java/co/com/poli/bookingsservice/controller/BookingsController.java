@@ -188,6 +188,16 @@ public class BookingsController {
         return this.responseBuild.failedNotFound("No existe bookings para la movie con id: " + id);
     }
 
+    @GetMapping("/user/{id}")
+    public Response validarUserRegistrado(@PathVariable("id") Long id) {
+        Boolean bookings = this.bookingsService.validarUserRegistrado(id);
+
+        if(bookings){
+            return this.responseBuild.success("Existe bookings para el user con id: " + id);
+        }
+
+        return this.responseBuild.failedNotFound("No existe bookings para el usuer con id: " + id);
+    }
 
 //    @PostMapping
 //    public Response save(@Valid @RequestBody UsersInDTO users, BindingResult result) {

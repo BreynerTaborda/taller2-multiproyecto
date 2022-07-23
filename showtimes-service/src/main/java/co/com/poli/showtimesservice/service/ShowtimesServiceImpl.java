@@ -5,6 +5,7 @@ import co.com.poli.showtimesservice.clientFeign.MoviesClient;
 import co.com.poli.showtimesservice.model.Movies;
 import co.com.poli.showtimesservice.persistence.entity.Showtimes;
 import co.com.poli.showtimesservice.persistence.entity.ShowtimesItem;
+import co.com.poli.showtimesservice.persistence.repository.ShowtimesItemRepository;
 import co.com.poli.showtimesservice.persistence.repository.ShowtimesRepository;
 import co.com.poli.showtimesservice.service.dto.ShowtimesDetalleInDTO;
 import co.com.poli.showtimesservice.service.dto.ShowtimesInDTO;
@@ -24,6 +25,7 @@ public class ShowtimesServiceImpl implements ShowtimesService {
 
     private final ShowtimesRepository showtimesRepository;
 
+    private final ShowtimesItemRepository showtimesItemRepository;
     private final MoviesClient moviesClient;
 
     @Override
@@ -100,6 +102,17 @@ public class ShowtimesServiceImpl implements ShowtimesService {
         }
 
         return null;
+    }
+
+    @Override
+    public Boolean validarMovieRegistrada(Long id) {
+        ShowtimesItem showtimesItem = this.showtimesItemRepository.findByIdMovie(id);
+
+        if(showtimesItem != null){
+            return true;
+        }
+
+        return false;
     }
 
 

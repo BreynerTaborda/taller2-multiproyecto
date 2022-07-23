@@ -44,4 +44,13 @@ public class ResponseBuild {
         return response;
     }
 
+    public Response failedServer(Object data){
+        Response response = new Response.Builder()
+                .code(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .data(data)
+                .build();
+
+        return response;
+    }
+
 }

@@ -279,4 +279,15 @@ public class BookingsServiceImpl implements BookingsService {
 
         return false;
     }
+
+    @Override
+    public Boolean validarUserRegistrado(Long id) {
+        Bookings bookings = this.bookingsRepository.findByUserID(id);
+
+        if(bookings != null){
+            return true;
+        }
+
+        return false;
+    }
 }

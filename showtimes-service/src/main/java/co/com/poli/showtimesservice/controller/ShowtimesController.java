@@ -76,6 +76,17 @@ public class ShowtimesController {
         return this.responseBuild.failed("No existe showtimes con el id:" + showtimes.getId());
     }
 
+    @GetMapping("/movie/{id}")
+    public Response validarMovieRegistrada(@PathVariable("id") Long id) {
+        Boolean bookingsItem = this.showtimesService.validarMovieRegistrada(id);
+
+        if(bookingsItem){
+            return this.responseBuild.success("Existe showtimes para la movie con id: " + id);
+        }
+
+        return this.responseBuild.failedNotFound("No existe showtimes para la movie con id: " + id);
+    }
+
 //    @PostMapping
 //    public Response save(@Valid @RequestBody UsersInDTO users, BindingResult result) {
 //        if(result.hasErrors()){

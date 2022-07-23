@@ -19,6 +19,8 @@ public class MoviesServiceImpl implements MoviesService {
 
     private final BookingsClient bookingsClient;
 
+    private final ShowtimesClient showtimesClient;
+
     @Override
     public Movies save(MoviesInDTO moviesInDTO) {
         Movies moviesEntity = new Movies();
@@ -31,16 +33,48 @@ public class MoviesServiceImpl implements MoviesService {
 
     @Override
     public String delete(Long id) {
+        Boolean servicioCaido = false;
+        Boolean movieShowtimesVacio = false;
+        Boolean movieBookingsVacio = false;
+
         Optional<Movies> movie = this.moviesRepository.findById(id);
 
         if(!movie.isEmpty()){
-            int exiteShowtimes = bookingsClient.validarMovieRegistrada(id).getCode();
+            String mensajeRespuesta = "Esta(n) abajo servicio(s) de: ";
+            int exiteShowtimes = showtimesClient.validarMovieRegistrada(id).getCode();
             if(exiteShowtimes == 404){
-                this.moviesRepository.delete(movie.get());
-                return "eliminada";
+                movieShowtimesVacio = true;
+            }else if(exiteShowtimes == 500){
+                servicioCaido = true;
+                mensajeRespuesta += "showtimes ";
             }
 
-            return "bookings";
+            int existeBookings = bookingsClient.validarMovieRegistrada(id).getCode();
+
+           if(existeBookings == 404){
+                movieBookingsVacio = true;
+            }else if(existeBookings == 500){
+                servicioCaido = true;
+                mensajeRespuesta += "bookings";
+            }
+
+           if(!servicioCaido){
+               if(movieBookingsVacio && movieShowtimesVacio){
+                   this.moviesRepository.delete(movie.get());
+                   return "eliminado";
+               }
+
+               mensajeRespuesta = "La pelicula con id:" + id + " esta registrada en:";
+               if(!movieShowtimesVacio){
+                   mensajeRespuesta += " showtimes";
+               }
+
+               if(!movieBookingsVacio){
+                   mensajeRespuesta += " bookings ";
+               }
+           }
+
+            return mensajeRespuesta;
         }
 
         return "inexistente";

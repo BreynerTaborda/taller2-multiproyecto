@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShowtimesItemRepository extends JpaRepository<ShowtimesItem, Long> {
-
+    ShowtimesItem findByIdMovie(Long id);
 }

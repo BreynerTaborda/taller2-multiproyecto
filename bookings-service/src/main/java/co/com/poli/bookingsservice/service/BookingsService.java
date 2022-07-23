@@ -18,4 +18,6 @@ public interface BookingsService {
     Boolean delete(Long id);
 
     Boolean validarMovieRegistrada(Long id);
+
+    Boolean validarUserRegistrado(Long id);
 }

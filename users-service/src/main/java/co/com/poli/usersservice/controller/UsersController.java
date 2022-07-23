@@ -44,13 +44,15 @@ public class UsersController {
 
     @DeleteMapping("/{id}")
     public Response delete(@PathVariable("id") Long idUsers) {
-        Boolean elminacionUsuario = this.usersService.delete(idUsers);
+        String elminacionUsuario = this.usersService.delete(idUsers);
 
-        if(elminacionUsuario){
+        if(elminacionUsuario.equals("inexistente")){
+            return this.responseBuild.failedNotFound("El user con id:" + idUsers + " no existe.");
+        }else if(elminacionUsuario.equals("eliminado")){
             return  this.responseBuild.success("El usuario con id:" + idUsers + " fue eliminado.");
         }
 
-        return this.responseBuild.failedNotFound("El usuario con id:" + idUsers + " no existe.");
+        return this.responseBuild.failedServer(elminacionUsuario);
     }
 
 

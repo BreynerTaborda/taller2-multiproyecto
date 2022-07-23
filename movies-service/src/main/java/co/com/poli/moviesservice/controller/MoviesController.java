@@ -43,13 +43,14 @@ public class MoviesController {
     public Response delete(@PathVariable("id") Long id) {
         String movieExistente = this.moviesService.delete(id);
 
-        if(movieExistente.equals("bookings")){
-            return this.responseBuild.failed("Existe un showtimes o un bookings para la movie con id:" + id);
-        }else if(movieExistente.equals("eliminada")){
+        if(movieExistente.equals("inexistente")){
+            return this.responseBuild.failedNotFound("La movie con id:" + id + " no existe.");
+        }else if(movieExistente.equals("eliminado")){
             return this.responseBuild.success("La movie con id:" + id + " fue eliminada.");
         }
 
-        return this.responseBuild.failedNotFound("La movie con id:" + id + " no existe.");
+
+        return this.responseBuild.failedServer(movieExistente);
     }
 
     @GetMapping

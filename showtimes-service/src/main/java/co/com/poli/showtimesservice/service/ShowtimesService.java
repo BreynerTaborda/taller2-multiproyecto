@@ -15,4 +15,6 @@ public interface ShowtimesService {
     ShowtimesDetalleInDTO findById(Long id);
 
     Showtimes save(Showtimes showtimes);
+
+    Boolean validarMovieRegistrada(Long id);
 }
