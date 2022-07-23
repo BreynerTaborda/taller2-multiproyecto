@@ -81,6 +81,7 @@ public class BookingsServiceImpl implements BookingsService {
         int validarServicioMovie = moviesClient.findById(1L).getCode();
         if(validarServicioMovie == 500){
             bookingsRespuesta.setId(-2L);
+            servicioCaido = true;
         }
 
         if(!servicioCaido && !notFound){
@@ -91,8 +92,6 @@ public class BookingsServiceImpl implements BookingsService {
                 nuevoItem.setIdMovie(bookingsItem.getIdMovie());
                 bookingsItems.add(nuevoItem);
                 int movie = moviesClient.findById(bookingsItem.getIdMovie()).getCode();
-                System.out.println("________________//////////////_____________");
-                System.out.println(movie);
                 if(movie == 404){
                     movieInexistente.add(nuevoItem);
                 }

@@ -30,66 +30,113 @@ public class ShowtimesServiceImpl implements ShowtimesService {
 
     @Override
     public Showtimes save(ShowtimesInDTO showtimesInDTO) {
+        Boolean servicioCaido = false;
         Showtimes showtimes = new Showtimes();
         showtimes.setDate(showtimesInDTO.getDate());
-        List<ShowtimesItem> showtimesItems = new ArrayList<>();
-        for(ShowtimesItemInDTO showtimesItem: showtimesInDTO.getItems()){
-            ShowtimesItem nuevoItem = new ShowtimesItem();
-            nuevoItem.setIdMovie(showtimesItem.getIdMovie());
 
-            showtimesItems.add(nuevoItem);
+        List<ShowtimesItem> showtimesItems = new ArrayList<>();
+        List<ShowtimesItem> movieInexistente = new ArrayList<>();
+
+        Showtimes showtimesRespuesta = new Showtimes();
+
+        int validarServicioMovie = moviesClient.findById(1L).getCode();
+        if(validarServicioMovie == 500){
+            showtimesRespuesta.setId(-1L);
+            servicioCaido = true;
         }
 
-        showtimes.setItems(showtimesItems);
+        if(!servicioCaido){
+            for(ShowtimesItemInDTO showtimesItem: showtimesInDTO.getItems()){
+                ShowtimesItem nuevoItem = new ShowtimesItem();
+                nuevoItem.setIdMovie(showtimesItem.getIdMovie());
+                showtimesItems.add(nuevoItem);
+                int movie = moviesClient.findById(showtimesItem.getIdMovie()).getCode();
+                if(movie == 404){
+                    movieInexistente.add(nuevoItem);
+                }
+            }
 
-        return this.showtimesRepository.save(showtimes);
+            showtimes.setItems(showtimesItems);
+
+            if(movieInexistente.isEmpty()){
+                return this.showtimesRepository.save(showtimes);
+            }else{
+                showtimesRespuesta.setId(-2L);
+                showtimesRespuesta.setItems(movieInexistente);
+            }
+        }
+
+        return showtimesRespuesta;
     }
 
     @Override
     public List<ShowtimesDetalleInDTO> findAll() {
+        Boolean servicioCaido = false;
         List<Showtimes> showtimes = this.showtimesRepository.findAll();
         ModelMapper modelMapper = new ModelMapper();
 
         List<ShowtimesDetalleInDTO> detalleInDTOList = new ArrayList<>();
 
-        for(int i = 0; i < showtimes.size(); i++){
-            ShowtimesDetalleInDTO showtimesDetalleInDTO = new ShowtimesDetalleInDTO();
-            showtimesDetalleInDTO.setDate(showtimes.get(i).getDate());
-            showtimesDetalleInDTO.setId(showtimes.get(i).getId());
+        ShowtimesDetalleInDTO showtimesRespuesta = new ShowtimesDetalleInDTO();
 
-            List<Movies> items = showtimes.get(i).getItems().stream()
-                    .map(showtimesItem -> {
-                        Movies movies = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
-                        return movies;
-                    }).collect(Collectors.toList());
-
-            showtimesDetalleInDTO.setItems(items);
-            detalleInDTOList.add(showtimesDetalleInDTO);
+        int validarServicioMovie = moviesClient.findById(1L).getCode();
+        if(validarServicioMovie == 500){
+            showtimesRespuesta.setId(-1L);
+            servicioCaido = true;
         }
 
+        if(!servicioCaido){
+            for(int i = 0; i < showtimes.size(); i++){
+                ShowtimesDetalleInDTO showtimesDetalleInDTO = new ShowtimesDetalleInDTO();
+                showtimesDetalleInDTO.setDate(showtimes.get(i).getDate());
+                showtimesDetalleInDTO.setId(showtimes.get(i).getId());
 
+                List<Movies> items = showtimes.get(i).getItems().stream()
+                        .map(showtimesItem -> {
+                            Movies movies = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
+                            return movies;
+                        }).collect(Collectors.toList());
 
+                showtimesDetalleInDTO.setItems(items);
+                detalleInDTOList.add(showtimesDetalleInDTO);
+            }
+
+            return detalleInDTOList;
+        }
+
+        detalleInDTOList.add(showtimesRespuesta);
         return detalleInDTOList;
     }
 
     @Override
     public ShowtimesDetalleInDTO findById(Long id) {
+        Boolean servicioCaido = false;
         Optional<Showtimes> showtimes = this.showtimesRepository.findById(id);
 
         if(!showtimes.isEmpty()){
-            ShowtimesDetalleInDTO showtimesDetalleInDTO = new ShowtimesDetalleInDTO();
-            showtimesDetalleInDTO.setId(showtimes.get().getId());
-            showtimesDetalleInDTO.setDate(showtimes.get().getDate());
+            ShowtimesDetalleInDTO showtimesRespuesta = new ShowtimesDetalleInDTO();
 
-            ModelMapper modelMapper = new ModelMapper();
-            List<Movies> movies = showtimes.get().getItems().stream()
-                                .map(showtimesItem -> {
-                                    Movies movie = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
-                                    return movie;
-                                }).collect(Collectors.toList());
-            showtimesDetalleInDTO.setItems(movies);
+            int validarServicioMovie = moviesClient.findById(1L).getCode();
+            if(validarServicioMovie == 500){
+                showtimesRespuesta.setId(-1L);
+                servicioCaido = true;
+            }
+            if(!servicioCaido){
+                ShowtimesDetalleInDTO showtimesDetalleInDTO = new ShowtimesDetalleInDTO();
+                showtimesDetalleInDTO.setId(showtimes.get().getId());
+                showtimesDetalleInDTO.setDate(showtimes.get().getDate());
 
-            return showtimesDetalleInDTO;
+                ModelMapper modelMapper = new ModelMapper();
+                List<Movies> movies = showtimes.get().getItems().stream()
+                        .map(showtimesItem -> {
+                            Movies movie = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
+                            return movie;
+                        }).collect(Collectors.toList());
+                showtimesDetalleInDTO.setItems(movies);
+
+                return showtimesDetalleInDTO;
+            }
+            return showtimesRespuesta;
         }
         return null;
     }

@@ -66,12 +66,12 @@ public class BookingsController {
 
            return this.responseBuild.failedNotFound(mensajeError);
        }else if(bookings.getId() == -4L){
-           String mensajeError = "Las movies: ";
+           String mensajeError = "La(s) movie(s): ";
            for(BookingsItem bookingsItem: bookings.getItems()){
                mensajeError  += bookingsItem.getIdMovie() + ", ";
            }
 
-           mensajeError += " no existen";
+           mensajeError += " no existe(n)";
            return this.responseBuild.failedNotFound(mensajeError);
        }
 

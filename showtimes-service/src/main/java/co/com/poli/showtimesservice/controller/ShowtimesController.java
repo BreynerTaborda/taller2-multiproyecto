@@ -6,6 +6,7 @@ package co.com.poli.showtimesservice.controller;
 import co.com.poli.showtimesservice.helpers.Response;
 import co.com.poli.showtimesservice.helpers.ResponseBuild;
 import co.com.poli.showtimesservice.persistence.entity.Showtimes;
+import co.com.poli.showtimesservice.persistence.entity.ShowtimesItem;
 import co.com.poli.showtimesservice.service.ShowtimesService;
 import co.com.poli.showtimesservice.service.dto.ShowtimesDetalleInDTO;
 import co.com.poli.showtimesservice.service.dto.ShowtimesInDTO;
@@ -36,6 +37,18 @@ public class ShowtimesController {
        }
 
        Showtimes showtimes = this.showtimesService.save(showtimesInDTO);
+       if(showtimes.getId() == -1L){
+           return this.responseBuild.failedServer("Esta abajo el servicio de movies");
+       }if(showtimes.getId() == -2L){
+            String mensajeError = "La(s) movie(s): ";
+            for(ShowtimesItem showtimesItem: showtimes.getItems()){
+                mensajeError  += showtimesItem.getIdMovie() + ", ";
+            }
+
+            mensajeError += " no existe(n)";
+            return this.responseBuild.failedNotFound(mensajeError);
+       }
+
        return this.responseBuild.success(showtimes);
     }
 
@@ -44,6 +57,10 @@ public class ShowtimesController {
         List<ShowtimesDetalleInDTO> showtimes = this.showtimesService.findAll();
 
         if(showtimes.size() > 0){
+            if(showtimes.get(0).getId() == -1L){
+                return this.responseBuild.failedServer("Esta abajo el servicio de movies");
+            }
+
             return this.responseBuild.success(showtimes);
         }
 
@@ -55,10 +72,14 @@ public class ShowtimesController {
         ShowtimesDetalleInDTO showtimes = this.showtimesService.findById(id);
 
         if(showtimes != null){
+            if(showtimes.getId() == -1){
+                return this.responseBuild.failedServer("Esta abajo el servicio de movies");
+            }
+
             return this.responseBuild.success(showtimes);
         }
 
-        return this.responseBuild.failedNotFound("No existe una movie para el id:" + id);
+        return this.responseBuild.failedNotFound("No existe showtimes para el id:" + id);
     }
 
     @PutMapping
