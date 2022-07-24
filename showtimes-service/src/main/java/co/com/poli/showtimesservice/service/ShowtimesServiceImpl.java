@@ -143,12 +143,38 @@ public class ShowtimesServiceImpl implements ShowtimesService {
 
     @Override
     public Showtimes save(Showtimes showtimes) {
+        Boolean servicioCaido = false;
         Optional<Showtimes> showtimesExistente = this.showtimesRepository.findById(showtimes.getId());
-        if(!showtimesExistente.isEmpty()){
-            return this.showtimesRepository.save(showtimes);
+
+        Showtimes showtimesRespuesta = null;
+        if (!showtimesExistente.isEmpty()) {
+            List<ShowtimesItem> movieInexistente = new ArrayList<>();
+            showtimesRespuesta = new Showtimes();
+
+            int validarServicioMovie = moviesClient.findById(1L).getCode();
+            if (validarServicioMovie == 500) {
+                showtimesRespuesta.setId(-1L);
+                servicioCaido = true;
+            }
+
+            if (!servicioCaido) {
+                for (ShowtimesItem showtimesItem : showtimes.getItems()) {
+                    int movie = moviesClient.findById(showtimesItem.getIdMovie()).getCode();
+                    if (movie == 404) {
+                        movieInexistente.add(showtimesItem);
+                    }
+                }
+
+                if (movieInexistente.isEmpty()) {
+                    return this.showtimesRepository.save(showtimes);
+                } else {
+                    showtimesRespuesta.setId(-2L);
+                    showtimesRespuesta.setItems(movieInexistente);
+                }
+            }
         }
 
-        return null;
+        return showtimesRespuesta;
     }
 
     @Override

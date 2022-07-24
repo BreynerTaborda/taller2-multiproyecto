@@ -90,11 +90,21 @@ public class ShowtimesController {
 
         Showtimes showtimesResult = this.showtimesService.save(showtimes);
 
-        if(showtimesResult != null){
-            return this.responseBuild.success(showtimesResult);
+        if(showtimesResult == null){
+            return this.responseBuild.failed("No existe showtimes con el id:" + showtimes.getId());
+        }else if(showtimesResult.getId() == -1L){
+            return this.responseBuild.failedServer("Esta abajo el servicio de movies");
+        }else if(showtimesResult.getId() == -2L){
+            String mensajeError = "La(s) movie(s): ";
+            for(ShowtimesItem showtimesItem: showtimes.getItems()){
+                mensajeError  += showtimesItem.getIdMovie() + ", ";
+            }
+
+            mensajeError += " no existe(n)";
+            return this.responseBuild.failedNotFound(mensajeError);
         }
 
-        return this.responseBuild.failed("No existe showtimes con el id:" + showtimes.getId());
+        return this.responseBuild.success(showtimes);
     }
 
     @GetMapping("/movie/{id}")
