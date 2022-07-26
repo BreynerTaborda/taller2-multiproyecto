@@ -32,7 +32,7 @@ public class Bookings {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "showtimes_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private List<BookingsItem> items;
+    private List<BookingsItem> movies;
 
     @Override
     public boolean equals(Object o) {

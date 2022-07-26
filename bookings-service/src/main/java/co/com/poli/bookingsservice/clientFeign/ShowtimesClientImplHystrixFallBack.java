@@ -16,6 +16,6 @@ public class ShowtimesClientImplHystrixFallBack implements ShowtimesClient{
 
     @Override
     public Response findById(Long id) {
-        return this.responseBuild.failedServer(new Showtimes());
+        return this.responseBuild.failedServerUnavailable(new Showtimes());
     }
 }

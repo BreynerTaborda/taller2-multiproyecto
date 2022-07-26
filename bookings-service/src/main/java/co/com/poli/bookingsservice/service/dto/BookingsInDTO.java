@@ -15,6 +15,6 @@ public class BookingsInDTO {
     @NotNull
     private Long showtimeId;
 
-    private List<BookingsItemInDTO> items;
+    private List<BookingsItemInDTO> movies;
 
 }

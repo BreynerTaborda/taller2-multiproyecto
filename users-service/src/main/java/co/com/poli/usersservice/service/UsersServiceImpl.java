@@ -38,7 +38,7 @@ public class UsersServiceImpl implements UsersService{
             int clienteExistente = bookingsClient.validarUserRegistrado(idUsers).getCode();
             if(clienteExistente == 404){
                 movieBookingsVacio = true;
-            }else if(clienteExistente == 500){
+            }else if(clienteExistente == 503){
                 servicioCaido = true;
             }
 

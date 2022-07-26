@@ -16,6 +16,6 @@ public class UsersClientImplHystrixFallBack implements UsersClient{
 
     @Override
     public Response findById(Long id) {
-        return this.responseBuild.failedServer(new Users());
+        return this.responseBuild.failedServerUnavailable(new Users());
     }
 }

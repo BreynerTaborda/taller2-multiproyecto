@@ -13,7 +13,7 @@ public interface BookingsService {
 
     BookingsDetalleInDTO findById(Long id);
 
-    BookingsDetalleInDTO findByIdUser(Long id);
+    List<BookingsDetalleInDTO> findByIdUser(Long id);
 
     Boolean delete(Long id);
 

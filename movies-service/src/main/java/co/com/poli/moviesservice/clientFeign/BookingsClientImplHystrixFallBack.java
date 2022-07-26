@@ -14,7 +14,7 @@ public class BookingsClientImplHystrixFallBack implements BookingsClient {
 
     @Override
     public Response validarMovieRegistrada(Long id) {
-        return this.responseBuild.failedServer("");
+        return this.responseBuild.failedServerUnavailable("");
     }
 }
 

@@ -13,7 +13,7 @@ public class BookingsClientImplHystrixFallBack implements BookingsClient {
 
     @Override
     public Response validarUserRegistrado(Long id) {
-        return this.responseBuild.failedServer("");
+        return this.responseBuild.failedServerUnavailable("");
     }
 }
 

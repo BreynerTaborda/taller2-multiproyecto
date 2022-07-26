@@ -67,7 +67,7 @@ public class BookingsController {
            return this.responseBuild.failedNotFound(mensajeError);
        }else if(bookings.getId() == -4L){
            String mensajeError = "La(s) movie(s): ";
-           for(BookingsItem bookingsItem: bookings.getItems()){
+           for(BookingsItem bookingsItem: bookings.getMovies()){
                mensajeError  += bookingsItem.getIdMovie() + ", ";
            }
 
@@ -138,21 +138,21 @@ public class BookingsController {
 
     @GetMapping("/users/{id}")
     public Response findByIdUser(@PathVariable("id") Long id) {
-        BookingsDetalleInDTO bookings = this.bookingsService.findByIdUser(id);
+        List<BookingsDetalleInDTO> bookings = this.bookingsService.findByIdUser(id);
 
         if(bookings != null){
-            if(bookings.getId() != null && (bookings.getId() == -1L || bookings.getId() == -2L)){
+            if(bookings.get(0).getId() != null && (bookings.get(0).getId() == -1L || bookings.get(0).getId() == -2L)){
                 String mensajeError = "Esta(n) abajo  servicio(s) de:";
 
-                if(bookings.getUser() != null && bookings.getUser().getId() != null && bookings.getUser().getId() == -1L){
+                if(bookings.get(0).getUser() != null && bookings.get(0).getUser().getId() != null && bookings.get(0).getUser().getId() == -1L){
                     mensajeError += " users";
                 }
 
-                if(bookings.getShowtimes() != null && bookings.getShowtimes().getId() != null && bookings.getShowtimes().getId() == -1L){
+                if(bookings.get(0).getShowtimes() != null && bookings.get(0).getShowtimes().getId() != null && bookings.get(0).getShowtimes().getId() == -1L){
                     mensajeError += " showtimes";
                 }
 
-                if(bookings.getId()  != null && bookings.getId() == -2L ){
+                if(bookings.get(0).getId()  != null && bookings.get(0).getId() == -2L ){
                     mensajeError += " movies";
                 }
 

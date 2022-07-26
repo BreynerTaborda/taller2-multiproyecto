@@ -52,4 +52,13 @@ public class ResponseBuild {
         return response;
     }
 
+    public Response failedServerUnavailable(Object data){
+        Response response = new Response.Builder()
+                .code(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .data(data)
+                .build();
+
+        return response;
+    }
+
 }

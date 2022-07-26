@@ -40,13 +40,13 @@ public class ShowtimesServiceImpl implements ShowtimesService {
         Showtimes showtimesRespuesta = new Showtimes();
 
         int validarServicioMovie = moviesClient.findById(1L).getCode();
-        if(validarServicioMovie == 500){
+        if(validarServicioMovie == 503){
             showtimesRespuesta.setId(-1L);
             servicioCaido = true;
         }
 
         if(!servicioCaido){
-            for(ShowtimesItemInDTO showtimesItem: showtimesInDTO.getItems()){
+            for(ShowtimesItemInDTO showtimesItem: showtimesInDTO.getMovies()){
                 ShowtimesItem nuevoItem = new ShowtimesItem();
                 nuevoItem.setIdMovie(showtimesItem.getIdMovie());
                 showtimesItems.add(nuevoItem);
@@ -56,13 +56,13 @@ public class ShowtimesServiceImpl implements ShowtimesService {
                 }
             }
 
-            showtimes.setItems(showtimesItems);
+            showtimes.setMovies(showtimesItems);
 
             if(movieInexistente.isEmpty()){
                 return this.showtimesRepository.save(showtimes);
             }else{
                 showtimesRespuesta.setId(-2L);
-                showtimesRespuesta.setItems(movieInexistente);
+                showtimesRespuesta.setMovies(movieInexistente);
             }
         }
 
@@ -80,7 +80,7 @@ public class ShowtimesServiceImpl implements ShowtimesService {
         ShowtimesDetalleInDTO showtimesRespuesta = new ShowtimesDetalleInDTO();
 
         int validarServicioMovie = moviesClient.findById(1L).getCode();
-        if(validarServicioMovie == 500){
+        if(validarServicioMovie == 503){
             showtimesRespuesta.setId(-1L);
             servicioCaido = true;
         }
@@ -91,13 +91,13 @@ public class ShowtimesServiceImpl implements ShowtimesService {
                 showtimesDetalleInDTO.setDate(showtimes.get(i).getDate());
                 showtimesDetalleInDTO.setId(showtimes.get(i).getId());
 
-                List<Movies> items = showtimes.get(i).getItems().stream()
+                List<Movies> items = showtimes.get(i).getMovies().stream()
                         .map(showtimesItem -> {
                             Movies movies = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
                             return movies;
                         }).collect(Collectors.toList());
 
-                showtimesDetalleInDTO.setItems(items);
+                showtimesDetalleInDTO.setMovies(items);
                 detalleInDTOList.add(showtimesDetalleInDTO);
             }
 
@@ -117,7 +117,7 @@ public class ShowtimesServiceImpl implements ShowtimesService {
             ShowtimesDetalleInDTO showtimesRespuesta = new ShowtimesDetalleInDTO();
 
             int validarServicioMovie = moviesClient.findById(1L).getCode();
-            if(validarServicioMovie == 500){
+            if(validarServicioMovie == 503){
                 showtimesRespuesta.setId(-1L);
                 servicioCaido = true;
             }
@@ -127,12 +127,12 @@ public class ShowtimesServiceImpl implements ShowtimesService {
                 showtimesDetalleInDTO.setDate(showtimes.get().getDate());
 
                 ModelMapper modelMapper = new ModelMapper();
-                List<Movies> movies = showtimes.get().getItems().stream()
+                List<Movies> movies = showtimes.get().getMovies().stream()
                         .map(showtimesItem -> {
                             Movies movie = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
                             return movie;
                         }).collect(Collectors.toList());
-                showtimesDetalleInDTO.setItems(movies);
+                showtimesDetalleInDTO.setMovies(movies);
 
                 return showtimesDetalleInDTO;
             }
@@ -152,13 +152,13 @@ public class ShowtimesServiceImpl implements ShowtimesService {
             showtimesRespuesta = new Showtimes();
 
             int validarServicioMovie = moviesClient.findById(1L).getCode();
-            if (validarServicioMovie == 500) {
+            if (validarServicioMovie == 503) {
                 showtimesRespuesta.setId(-1L);
                 servicioCaido = true;
             }
 
             if (!servicioCaido) {
-                for (ShowtimesItem showtimesItem : showtimes.getItems()) {
+                for (ShowtimesItem showtimesItem : showtimes.getMovies()) {
                     int movie = moviesClient.findById(showtimesItem.getIdMovie()).getCode();
                     if (movie == 404) {
                         movieInexistente.add(showtimesItem);
@@ -169,7 +169,7 @@ public class ShowtimesServiceImpl implements ShowtimesService {
                     return this.showtimesRepository.save(showtimes);
                 } else {
                     showtimesRespuesta.setId(-2L);
-                    showtimesRespuesta.setItems(movieInexistente);
+                    showtimesRespuesta.setMovies(movieInexistente);
                 }
             }
         }
@@ -179,9 +179,15 @@ public class ShowtimesServiceImpl implements ShowtimesService {
 
     @Override
     public Boolean validarMovieRegistrada(Long id) {
-        ShowtimesItem showtimesItem = this.showtimesItemRepository.findByIdMovie(id);
+        List<ShowtimesItem> showtimesItem = this.showtimesItemRepository.findByIdMovie(id);
 
-        if(showtimesItem != null){
+        if(!showtimesItem.isEmpty()){
+
+            for(ShowtimesItem item: showtimesItem){
+                System.out.println("____________________________________________");
+                System.out.println(item.getId());
+            }
+
             return true;
         }
 

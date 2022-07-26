@@ -10,5 +10,5 @@ import java.util.List;
 public class ShowtimesDetalleInDTO {
     private Long id;
     private Date date;
-    private List<Movies> items;
+    private List<Movies> movies;
 }

@@ -15,6 +15,6 @@ public class MoviesClientImplHystrixFallBack implements MoviesClient{
 
     @Override
     public Response findById(Long id) {
-        return this.responseBuild.failedServer(new Movies());
+        return this.responseBuild.failedServerUnavailable(new Movies());
     }
 }

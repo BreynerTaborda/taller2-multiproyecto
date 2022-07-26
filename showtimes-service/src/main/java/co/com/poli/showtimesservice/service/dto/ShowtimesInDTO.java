@@ -20,6 +20,6 @@ import java.util.List;
 public class ShowtimesInDTO {
     @NotNull
     private Date date;
-    private List<ShowtimesItemInDTO> items;
+    private List<ShowtimesItemInDTO> movies;
 
 }

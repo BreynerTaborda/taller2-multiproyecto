@@ -11,5 +11,5 @@ import java.util.List;
 public class Showtimes {
     private Long id;
     private Date date;
-    private List<Movies> items;
+    private List<Movies> movies;
 }

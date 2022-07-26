@@ -44,7 +44,7 @@ public class MoviesServiceImpl implements MoviesService {
             int exiteShowtimes = showtimesClient.validarMovieRegistrada(id).getCode();
             if(exiteShowtimes == 404){
                 movieShowtimesVacio = true;
-            }else if(exiteShowtimes == 500){
+            }else if(exiteShowtimes == 503){
                 servicioCaido = true;
                 mensajeRespuesta += "showtimes ";
             }
@@ -53,7 +53,7 @@ public class MoviesServiceImpl implements MoviesService {
 
            if(existeBookings == 404){
                 movieBookingsVacio = true;
-            }else if(existeBookings == 500){
+            }else if(existeBookings == 503){
                 servicioCaido = true;
                 mensajeRespuesta += "bookings";
             }

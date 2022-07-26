@@ -14,6 +14,6 @@ public class ShowtimesClientImplHystrixFallBack implements ShowtimesClient{
 
     @Override
     public Response validarMovieRegistrada(Long id) {
-        return this.responseBuild.failedServer("");
+        return this.responseBuild.failedServerUnavailable("");
     }
 }

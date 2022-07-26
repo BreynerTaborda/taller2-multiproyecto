@@ -29,7 +29,7 @@ public class Showtimes {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "showtimes_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private List<ShowtimesItem> items;
+    private List<ShowtimesItem> movies;
 
     @Override
     public boolean equals(Object o) {

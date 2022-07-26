@@ -61,7 +61,7 @@ public class BookingsServiceImpl implements BookingsService {
             bookingsRespuesta.setId(-3L);
             bookingsRespuesta.setUserID(-3L);
             notFound = true;
-        }else if(users == 500){
+        }else if(users == 503){
             bookingsRespuesta.setId(-1L);
             bookingsRespuesta.setUserID(-1L);
             servicioCaido = true;
@@ -72,14 +72,14 @@ public class BookingsServiceImpl implements BookingsService {
         if(showtimes == 404){
             bookingsRespuesta.setId(-3L);
             bookingsRespuesta.setShowtimeID(-3L);
-        }else if(showtimes == 500){
+        }else if(showtimes == 503){
             bookingsRespuesta.setId(-1L);
             bookingsRespuesta.setShowtimeID(-1L);
             servicioCaido = true;
         }
 
         int validarServicioMovie = moviesClient.findById(1L).getCode();
-        if(validarServicioMovie == 500){
+        if(validarServicioMovie == 503){
             bookingsRespuesta.setId(-2L);
             servicioCaido = true;
         }
@@ -87,7 +87,7 @@ public class BookingsServiceImpl implements BookingsService {
         if(!servicioCaido && !notFound){
             List<BookingsItem> bookingsItems = new ArrayList<>();
             List<BookingsItem> movieInexistente = new ArrayList<>();
-            for(BookingsItemInDTO bookingsItem: bookingsInDTO.getItems()){
+            for(BookingsItemInDTO bookingsItem: bookingsInDTO.getMovies()){
                 BookingsItem nuevoItem = new BookingsItem();
                 nuevoItem.setIdMovie(bookingsItem.getIdMovie());
                 bookingsItems.add(nuevoItem);
@@ -97,13 +97,13 @@ public class BookingsServiceImpl implements BookingsService {
                 }
             }
 
-            bookings.setItems(bookingsItems);
+            bookings.setMovies(bookingsItems);
 
             if(movieInexistente.isEmpty()){
                 return this.bookingsRepository.save(bookings);
             }else{
                 bookingsRespuesta.setId(-4L);
-                bookingsRespuesta.setItems(movieInexistente);
+                bookingsRespuesta.setMovies(movieInexistente);
             }
         }
 
@@ -129,7 +129,7 @@ public class BookingsServiceImpl implements BookingsService {
         BookingsDetalleInDTO bookingsRespuesta = new BookingsDetalleInDTO();
 
         int users = usersClient.findById(1L).getCode();
-        if(users == 500){
+        if(users == 503){
             bookingsRespuesta.setId(-1L);
             Users user = new Users();
             user.setId(-1L);
@@ -138,7 +138,7 @@ public class BookingsServiceImpl implements BookingsService {
         }
 
         int showtime = showtimesClient.findById(1L).getCode();
-        if(showtime == 500){
+        if(showtime == 503){
             bookingsRespuesta.setId(-1L);
             Showtimes showtimes = new Showtimes();
             showtimes.setId(-1L);
@@ -147,7 +147,7 @@ public class BookingsServiceImpl implements BookingsService {
         }
 
         int validarServicioMovie = moviesClient.findById(1L).getCode();
-        if(validarServicioMovie == 500){
+        if(validarServicioMovie == 503){
             bookingsRespuesta.setId(-2L);
             servicioCaido = true;
         }
@@ -164,7 +164,7 @@ public class BookingsServiceImpl implements BookingsService {
                 Showtimes showtimes = modelMapper.map(showtimesClient.findById(bookings.get(i).getShowtimeID()).getData(),Showtimes.class);
                 bookingsDetalleInDTO.setShowtimes(showtimes);
 
-                List<Movies> movies = bookings.get(i).getItems().stream()
+                List<Movies> movies = bookings.get(i).getMovies().stream()
                         .map(showtimesItem -> {
                             Movies movie = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
                             return movie;
@@ -191,7 +191,7 @@ public class BookingsServiceImpl implements BookingsService {
             BookingsDetalleInDTO bookingsRespuesta = new BookingsDetalleInDTO();
 
             int users = usersClient.findById(1L).getCode();
-            if(users == 500){
+            if(users == 503){
                 bookingsRespuesta.setId(-1L);
                 Users user = new Users();
                 user.setId(-1L);
@@ -200,7 +200,7 @@ public class BookingsServiceImpl implements BookingsService {
             }
 
             int showtime = showtimesClient.findById(1L).getCode();
-            if(showtime == 500){
+            if(showtime == 503){
                 bookingsRespuesta.setId(-1L);
                 Showtimes showtimes = new Showtimes();
                 showtimes.setId(-1L);
@@ -209,7 +209,7 @@ public class BookingsServiceImpl implements BookingsService {
             }
 
             int validarServicioMovie = moviesClient.findById(1L).getCode();
-            if(validarServicioMovie == 500){
+            if(validarServicioMovie == 503){
                 bookingsRespuesta.setId(-2L);
                 servicioCaido = true;
             }
@@ -227,7 +227,7 @@ public class BookingsServiceImpl implements BookingsService {
                 Showtimes showtimes = modelMapper.map(showtimesClient.findById(bookings.get().getShowtimeID()).getData(),Showtimes.class);
                 bookingsDetalleInDTO.setShowtimes(showtimes);
 
-                List<Movies> movies = bookings.get().getItems().stream()
+                List<Movies> movies = bookings.get().getMovies().stream()
                         .map(showtimesItem -> {
                             Movies movie = modelMapper.map(moviesClient.findById(showtimesItem.getIdMovie()).getData(),Movies.class);
                             return movie;
@@ -246,11 +246,14 @@ public class BookingsServiceImpl implements BookingsService {
     }
 
     @Override
-    public BookingsDetalleInDTO findByIdUser(Long id) {
-        Bookings bookings = this.bookingsRepository.findByUserID(id);
-
+    public List<BookingsDetalleInDTO> findByIdUser(Long id) {
+        List<Bookings> bookings = this.bookingsRepository.findByUserID(id);
+        List<BookingsDetalleInDTO> detalleInDTOList = new ArrayList<>();
         if(bookings != null){
-            return findById(bookings.getId());
+            for(Bookings booking: bookings){
+                detalleInDTOList.add(findById(booking.getId()));
+            }
+            return detalleInDTOList;
         }
 
         return null;
@@ -270,9 +273,9 @@ public class BookingsServiceImpl implements BookingsService {
 
     @Override
     public Boolean validarMovieRegistrada(Long id) {
-        BookingsItem  bookingsItem = this.bookingsItemRepository.findByIdMovie(id);
+        List<BookingsItem>  bookingsItem = this.bookingsItemRepository.findByIdMovie(id);
 
-        if(bookingsItem != null){
+        if(!bookingsItem.isEmpty()){
             return true;
         }
 
@@ -281,9 +284,9 @@ public class BookingsServiceImpl implements BookingsService {
 
     @Override
     public Boolean validarUserRegistrado(Long id) {
-        Bookings bookings = this.bookingsRepository.findByUserID(id);
+        List<Bookings> bookings = this.bookingsRepository.findByUserID(id);
 
-        if(bookings != null){
+        if(!bookings.isEmpty()){
             return true;
         }
 
