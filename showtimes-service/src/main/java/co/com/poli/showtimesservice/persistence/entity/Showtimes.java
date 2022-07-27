@@ -26,7 +26,7 @@ public class Showtimes {
     @Column
     private Date date;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "showtimes_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<ShowtimesItem> movies;

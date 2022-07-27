@@ -140,7 +140,7 @@ public class BookingsController {
     public Response findByIdUser(@PathVariable("id") Long id) {
         List<BookingsDetalleInDTO> bookings = this.bookingsService.findByIdUser(id);
 
-        if(bookings != null){
+        if(!bookings.isEmpty()){
             if(bookings.get(0).getId() != null && (bookings.get(0).getId() == -1L || bookings.get(0).getId() == -2L)){
                 String mensajeError = "Esta(n) abajo  servicio(s) de:";
 
